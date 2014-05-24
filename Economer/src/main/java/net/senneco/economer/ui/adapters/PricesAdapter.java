@@ -10,27 +10,41 @@ import net.senneco.economer.R;
 import net.senneco.economer.data.Price;
 import net.senneco.economer.ui.fragments.CalculatorFragment;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by senneco on 24.05.2014
  */
 public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
-    private final List<Price> mPrices;
+    private static final Map<Price.Level, Integer> LEVEL_COLORS;
+
+    private List<Price> mPrices;
     private CalculatorFragment mCalculatorFragment;
+
+    static {
+        LEVEL_COLORS = new HashMap<Price.Level, Integer>(5);
+        LEVEL_COLORS.put(Price.Level.VERY_GOOD, R.color.very_good);
+        LEVEL_COLORS.put(Price.Level.GOOD, R.color.good);
+        LEVEL_COLORS.put(Price.Level.NORMAL, R.color.normal);
+        LEVEL_COLORS.put(Price.Level.BAD, R.color.bad);
+        LEVEL_COLORS.put(Price.Level.VERY_BAD, R.color.very_bad);
+    }
 
     public PricesAdapter(CalculatorFragment calculatorFragment) {
         mCalculatorFragment = calculatorFragment;
         mPrices = new ArrayList<Price>();
     }
 
-    public void addItem(Price price) {
-        mPrices.add(price);
+    public void addItem(Price newPrice) {
+        mPrices.add(newPrice);
 
         Collections.sort(mPrices);
+
+        Price maxPrice = mPrices.get(mPrices.size() - 1);
+        for (Price price : mPrices) {
+            Price.EconomyCalculator.calc(price, maxPrice);
+        }
 
         notifyDataSetChanged();
     }
@@ -74,31 +88,21 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
         Price price = getItem(position);
 
-        double economy = (1 - (price.getPriceRate() / mPrices.get(mPrices.size() - 1).getPriceRate())) * 100d;
-
         holder.priceText.setText(String.format("%.2f", price.getPrice()));
         holder.sizeText.setText(String.format("%.0f", price.getSize()));
-        holder.economyText.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
+        holder.economyText.setText(price.getEconomyPercents() > 0 ? String.format("-%.0f%%", price.getEconomyPercents()) : "");
         holder.acceptButton.setTag(price);
 
-        int backgroundColorResId;
-        if (economy > 13) {
-            backgroundColorResId = R.color.very_good;
-        } else if (economy > 8) {
-            backgroundColorResId = R.color.good;
-        } else if (economy > 3) {
-            backgroundColorResId = R.color.normal;
-        } else if (economy > 1) {
-            backgroundColorResId = R.color.bad;
-        } else if (mPrices.size() > 2) {
-            backgroundColorResId = R.color.very_bad;
-        } else if (mPrices.size() > 1) {
-            backgroundColorResId = R.color.bad;
-        } else {
-            backgroundColorResId = R.color.normal;
+        Price.Level level = price.getLevel();
+        int backgroundColorResId = LEVEL_COLORS.get(level);
+
+        if (level == Price.Level.VERY_BAD) {
+            if (mPrices.size() == 1) {
+                backgroundColorResId = R.color.normal;
+            } else if (mPrices.size() == 2) {
+                backgroundColorResId = R.color.bad;
+            }
         }
-
-
 
         //noinspection ConstantConditions
         convertView.setBackgroundColor(context.getResources().getColor(backgroundColorResId));
@@ -110,7 +114,7 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.butt_accept:
-                mCalculatorFragment.choosePrice((Price) v.getTag(), mPrices.get(mPrices.size() - 1));
+                mCalculatorFragment.choosePrice((Price) v.getTag());
                 break;
         }
     }
