@@ -46,13 +46,12 @@
         android:id="@+id/text_economy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/butt_add"
+        android:layout_toLeftOf="@+id/butt_accept"
         android:layout_centerVertical="true"
         android:layout_alignBottom="@id/text_price"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="4dp"
-        style="@android:style/TextAppearance.Large"
-        android:text="-16%"/>
+        style="@android:style/TextAppearance.Large" />
 
     <ImageButton
         android:id="@+id/butt_accept"
