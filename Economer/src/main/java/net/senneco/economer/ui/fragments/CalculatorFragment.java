@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import net.senneco.economer.R;
 import net.senneco.economer.data.Price;
+import net.senneco.economer.ui.activities.MainActivity;
 import net.senneco.economer.ui.adapters.PricesAdapter;
 
 /**
@@ -43,7 +44,7 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         ImageButton addButton = (ImageButton) view.findViewById(R.id.butt_add);
         addButton.setOnClickListener(this);
 
-        mPricesAdapter = new PricesAdapter();
+        mPricesAdapter = new PricesAdapter(this);
 
         ListView itemsList = (ListView) view.findViewById(R.id.list_prices);
         itemsList.setAdapter(mPricesAdapter);
@@ -58,5 +59,9 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
             mPricesAdapter.addItem(price);
         }
+    }
+
+    public void addItemIfAny() {
+        ((MainActivity) getActivity()).addItemIfAny();
     }
 }

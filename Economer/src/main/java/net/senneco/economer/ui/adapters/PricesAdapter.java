@@ -3,9 +3,11 @@ package net.senneco.economer.ui.adapters;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import net.senneco.economer.R;
 import net.senneco.economer.data.Price;
+import net.senneco.economer.ui.fragments.CalculatorFragment;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,11 +16,13 @@ import java.util.List;
 /**
  * Created by senneco on 24.05.2014
  */
-public class PricesAdapter extends BaseAdapter{
+public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
     private final List<Price> mPrices;
+    private CalculatorFragment mCalculatorFragment;
 
-    public PricesAdapter() {
+    public PricesAdapter(CalculatorFragment calculatorFragment) {
+        mCalculatorFragment = calculatorFragment;
         mPrices = new ArrayList<Price>();
     }
 
@@ -53,9 +57,12 @@ public class PricesAdapter extends BaseAdapter{
             convertView = View.inflate(parent.getContext(), R.layout.item_price, null);
 
             holder = new ItemHolder();
-            holder.price = (TextView) convertView.findViewById(R.id.text_price);
-            holder.size = (TextView) convertView.findViewById(R.id.text_size);
-            holder.economy = (TextView) convertView.findViewById(R.id.text_economy);
+            holder.priceText = (TextView) convertView.findViewById(R.id.text_price);
+            holder.sizeText = (TextView) convertView.findViewById(R.id.text_size);
+            holder.economyText = (TextView) convertView.findViewById(R.id.text_economy);
+            holder.acceptButton = (ImageButton) convertView.findViewById(R.id.butt_accept);
+
+            holder.acceptButton.setOnClickListener(this);
 
             convertView.setTag(holder);
         } else {
@@ -66,16 +73,26 @@ public class PricesAdapter extends BaseAdapter{
 
         double economy = (1 - (price.getPriceRate() / mPrices.get(mPrices.size() - 1).getPriceRate())) * 100d;
 
-        holder.price.setText(String.format("%.2f", price.getPrice()));
-        holder.size.setText(String.format("%.0f", price.getSize()));
-        holder.economy.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
+        holder.priceText.setText(String.format("%.2f", price.getPrice()));
+        holder.sizeText.setText(String.format("%.0f", price.getSize()));
+        holder.economyText.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
 
         return convertView;
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.butt_accept:
+                mCalculatorFragment.addItemIfAny();
+                break;
+        }
+    }
+
     private class ItemHolder {
-        TextView price;
-        TextView size;
-        TextView economy;
+        TextView priceText;
+        TextView sizeText;
+        TextView economyText;
+        ImageButton acceptButton;
     }
 }
