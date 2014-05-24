@@ -19,7 +19,7 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
     private static final Map<Price.Level, Integer> LEVEL_COLORS;
 
-    private List<Price> mPrices;
+    private ArrayList<Price> mPrices;
     private CalculatorFragment mCalculatorFragment;
 
     static {
@@ -36,6 +36,12 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
         mPrices = new ArrayList<Price>();
     }
 
+    public void addItems(List<Price> prices) {
+        mPrices.addAll(prices);
+
+        notifyDataSetChanged();
+    }
+
     public void addItem(Price newPrice) {
         mPrices.add(newPrice);
 
@@ -47,6 +53,10 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
         }
 
         notifyDataSetChanged();
+    }
+
+    public ArrayList<Price> getPrices() {
+        return mPrices;
     }
 
     @Override

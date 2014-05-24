@@ -1,9 +1,11 @@
 package net.senneco.economer.data;
 
+import java.io.Serializable;
+
 /**
  * Created by senneco on 24.05.2014
  */
-public class Price implements Comparable<Price> {
+public class Price implements Comparable<Price>, Serializable {
     private double mPrice;
     private double mSize;
     private double mEconomyPercents;

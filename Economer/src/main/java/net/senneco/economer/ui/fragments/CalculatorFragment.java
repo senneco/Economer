@@ -21,17 +21,18 @@ import net.senneco.economer.ui.adapters.PricesAdapter;
  */
 public class CalculatorFragment extends Fragment implements View.OnClickListener {
 
+    public static final String PRICES = "prices";
+
     private PricesAdapter mPricesAdapter;
     private EditText mPriceEdit;
     private EditText mSizeEdit;
 
     public CalculatorFragment() {
-        // Required empty public constructor
+        // pass
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_calculator, container, false);
     }
 
@@ -48,6 +49,18 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
 
         ListView itemsList = (ListView) view.findViewById(R.id.list_prices);
         itemsList.setAdapter(mPricesAdapter);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(PRICES)) {
+            //noinspection unchecked
+            mPricesAdapter.addItems((java.util.List<Price>) savedInstanceState.getSerializable(PRICES));
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putSerializable(PRICES, mPricesAdapter.getPrices());
     }
 
     @Override
