@@ -64,9 +64,11 @@ public class ItemsAdapter extends BaseAdapter{
 
         Item item = getItem(position);
 
+        double economy = (1 - (item.getPriceRate() / mItems.get(mItems.size() - 1).getPriceRate())) * 100d;
+
         holder.price.setText(String.format("%.2f", item.getPrice()));
-        holder.size.setText(String.format("%.2f", item.getSize()));
-        holder.economy.setText(String.format("%.2f", (1 - (item.getPriceRate() / mItems.get(mItems.size() - 1).getPriceRate())) * 100d));
+        holder.size.setText(String.format("%.0f", item.getSize()));
+        holder.economy.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
 
         return convertView;
     }

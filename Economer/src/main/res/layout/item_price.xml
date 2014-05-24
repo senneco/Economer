@@ -18,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/text_price"
+        android:layout_alignBottom="@id/text_price"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_alignBaseline="@id/text_price"
         android:text="руб. за"/>
 
     <TextView
@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/text_currency_for"
-        android:layout_alignBaseline="@id/text_price"
+        android:layout_centerVertical="true"
         style="@android:style/TextAppearance.Large"/>
 
     <TextView
@@ -37,20 +37,31 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/text_size"
         android:layout_toLeftOf="@+id/text_economy"
+        android:layout_alignBottom="@id/text_price"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        android:layout_alignBaseline="@id/text_price"
         android:text="@string/quantity"/>
 
     <TextView
         android:id="@+id/text_economy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@+id/butt_add"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="8dp"
+        android:layout_alignBottom="@id/text_price"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="4dp"
         style="@android:style/TextAppearance.Large"
         android:text="-16%"/>
+
+    <ImageButton
+        android:id="@+id/butt_add"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="0dp"
+        android:padding="6dp"
+        android:src="@drawable/ic_action_accept" />
 
 </RelativeLayout>

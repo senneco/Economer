@@ -45,7 +45,8 @@
         android:layout_height="40dp"
         android:layout_toRightOf="@id/text_for"
         android:layout_toLeftOf="@+id/text_quantity"
-        android:layout_alignTop="@id/text_currency" />
+        android:layout_alignTop="@id/text_currency"
+        android:inputType="number"/>
 
     <TextView
         android:id="@+id/text_quantity"
