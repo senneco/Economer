@@ -3,7 +3,7 @@ package net.senneco.economer.data;
 /**
  * Created by senneco on 24.05.2014
  */
-public class Item implements Comparable<Item> {
+public class Price implements Comparable<Price> {
     private double mPrice;
     private double mSize;
 
@@ -28,7 +28,7 @@ public class Item implements Comparable<Item> {
     }
 
     @Override
-    public int compareTo(Item another) {
+    public int compareTo(Price another) {
         if (another == null) return -1;
 
         double result = mPrice / mSize - another.getPrice() / another.getSize();

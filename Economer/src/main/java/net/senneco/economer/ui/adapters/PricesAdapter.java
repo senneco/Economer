@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import net.senneco.economer.R;
-import net.senneco.economer.data.Item;
+import net.senneco.economer.data.Price;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,30 +14,30 @@ import java.util.List;
 /**
  * Created by senneco on 24.05.2014
  */
-public class ItemsAdapter extends BaseAdapter{
+public class PricesAdapter extends BaseAdapter{
 
-    private final List<Item> mItems;
+    private final List<Price> mPrices;
 
-    public ItemsAdapter() {
-        mItems = new ArrayList<Item>();
+    public PricesAdapter() {
+        mPrices = new ArrayList<Price>();
     }
 
-    public void addItem(Item item) {
-        mItems.add(item);
+    public void addItem(Price price) {
+        mPrices.add(price);
 
-        Collections.sort(mItems);
+        Collections.sort(mPrices);
 
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return mItems.size();
+        return mPrices.size();
     }
 
     @Override
-    public Item getItem(int position) {
-        return mItems.get(position);
+    public Price getItem(int position) {
+        return mPrices.get(position);
     }
 
     @Override
@@ -62,12 +62,12 @@ public class ItemsAdapter extends BaseAdapter{
             holder = (ItemHolder) convertView.getTag();
         }
 
-        Item item = getItem(position);
+        Price price = getItem(position);
 
-        double economy = (1 - (item.getPriceRate() / mItems.get(mItems.size() - 1).getPriceRate())) * 100d;
+        double economy = (1 - (price.getPriceRate() / mPrices.get(mPrices.size() - 1).getPriceRate())) * 100d;
 
-        holder.price.setText(String.format("%.2f", item.getPrice()));
-        holder.size.setText(String.format("%.0f", item.getSize()));
+        holder.price.setText(String.format("%.2f", price.getPrice()));
+        holder.size.setText(String.format("%.0f", price.getSize()));
         holder.economy.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
 
         return convertView;

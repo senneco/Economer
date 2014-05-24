@@ -11,8 +11,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import net.senneco.economer.R;
-import net.senneco.economer.data.Item;
-import net.senneco.economer.ui.adapters.ItemsAdapter;
+import net.senneco.economer.data.Price;
+import net.senneco.economer.ui.adapters.PricesAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,8 +20,7 @@ import net.senneco.economer.ui.adapters.ItemsAdapter;
  */
 public class CalculatorFragment extends Fragment implements View.OnClickListener {
 
-
-    private ItemsAdapter mItemsAdapter;
+    private PricesAdapter mPricesAdapter;
     private EditText mPriceEdit;
     private EditText mSizeEdit;
 
@@ -44,20 +43,20 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         ImageButton addButton = (ImageButton) view.findViewById(R.id.butt_add);
         addButton.setOnClickListener(this);
 
-        mItemsAdapter = new ItemsAdapter();
+        mPricesAdapter = new PricesAdapter();
 
         ListView itemsList = (ListView) view.findViewById(R.id.list_prices);
-        itemsList.setAdapter(mItemsAdapter);
+        itemsList.setAdapter(mPricesAdapter);
     }
 
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.butt_add) {
-            Item item = new Item();
-            item.setPrice(Double.parseDouble(mPriceEdit.getText().toString()));
-            item.setSize(Double.parseDouble(mSizeEdit.getText().toString()));
+            Price price = new Price();
+            price.setPrice(Double.parseDouble(mPriceEdit.getText().toString()));
+            price.setSize(Double.parseDouble(mSizeEdit.getText().toString()));
 
-            mItemsAdapter.addItem(item);
+            mPricesAdapter.addItem(price);
         }
     }
 }
