@@ -48,6 +48,16 @@ public class MainActivity extends ActionBarActivity {
         showNextItem();
     }
 
+    @Override
+    public void onBackPressed() {
+        int currentItem = mItemsPager.getCurrentItem();
+        if (currentItem > 0) {
+            mItemsPager.setCurrentItem(currentItem - 1);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     public void showNextItem() {
         if (mItemsPager.getCurrentItem() == mItemsAdapter.getCount() - 1) {
             mItemsAdapter.addPage();
