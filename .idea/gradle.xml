@@ -9,6 +9,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/Economer" />
+            <option value="$PROJECT_DIR$/Tess-Two" />
           </set>
         </option>
       </GradleProjectSettings>

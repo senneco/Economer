@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Economer.iml" filepath="$PROJECT_DIR$/Economer.iml" />
       <module fileurl="file://$PROJECT_DIR$/Economer/Economer-Economer.iml" filepath="$PROJECT_DIR$/Economer/Economer-Economer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Tess-Two/Tess-Two.iml" filepath="$PROJECT_DIR$/Tess-Two/Tess-Two.iml" />
     </modules>
   </component>
 </project>

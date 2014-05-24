@@ -4,18 +4,56 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <SurfaceView
+        android:id="@+id/surface_camera"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/camera_sight_top"
+        android:background="#88888888"/>
+    <View
+        android:layout_width="@dimen/camera_sight_left"
+        android:layout_height="@dimen/camera_sight_height"
+        android:layout_marginTop="@dimen/camera_sight_top"
+        android:background="#88888888"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/camera_sight_bottom"
+        android:background="#88888888" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/camera_sight_height"
+        android:layout_marginTop="@dimen/camera_sight_top"
+        android:layout_marginLeft="@dimen/camera_sight_right"
+        android:background="#88888888"/>
+
+    <ImageButton
+        android:id="@+id/butt_shot"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="25dp"
+        android:src="@drawable/ic_action_camera"/>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/pager_items"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/view_economy_background"/>
+        android:layout_marginTop="125dp"
+        android:layout_above="@+id/view_economy_background"
+        android:background="#EFEFEF"/>
 
     <View
         android:id="@+id/view_economy_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignTop="@+id/text_economy_is"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:background="#EFEFEF" />
 
     <TextView
         android:id="@+id/text_economy_is"
