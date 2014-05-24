@@ -50,6 +50,8 @@ public class MainActivity extends ActionBarActivity {
 
     private SurfaceView mCameraSurface;
     private SurfaceHolder mCameraHolder;
+    private TextView mPriceText;
+    private ImageButton mAcceptButton;
 
     boolean mNeedPhoto = false;
 
@@ -63,12 +65,6 @@ public class MainActivity extends ActionBarActivity {
     public static final String lang = "eng";
 
     private static final String TAG = "SimpleAndroidOCR.java";
-
-    protected Button _button;
-    // protected ImageView _image;
-    protected EditText _field;
-    protected String _path;
-    protected boolean _taken;
 
     protected static final String PHOTO_TAKEN = "photo_taken";
 
@@ -121,6 +117,15 @@ public class MainActivity extends ActionBarActivity {
         mEconomies = new SparseArray<Double>();
         mLevels = new SparseArray<Price.Level>();
 
+        mPriceText = (TextView) findViewById(R.id.text_price);
+
+        mAcceptButton = (ImageButton) findViewById(R.id.butt_accept);
+        mAcceptButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mItemsAdapter.getItem(mItemsPager.getCurrentItem()).setPrice(mPriceText.getText().toString());
+            }
+        });
         findViewById(R.id.butt_shot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,7 +181,19 @@ public class MainActivity extends ActionBarActivity {
 
                                 Log.v(TAG, "OCRED TEXT: " + recognizedText);
 
-                                Toast.makeText(MainActivity.this, "OCR: " + recognizedText, Toast.LENGTH_SHORT).show();
+                                recognizedText = recognizedText.replaceAll("[^0-9.,]+", "");
+
+                                double price;
+                                try {
+                                    price = Double.valueOf(recognizedText);
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(MainActivity.this, "Не могу распознать цену", Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                mPriceText.setText(String.valueOf(price));
+                                mPriceText.setVisibility(View.VISIBLE);
+                                mAcceptButton.setVisibility(View.VISIBLE);
                             }
                         }
                     });

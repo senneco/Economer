@@ -70,11 +70,18 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
             price.setPrice(Double.parseDouble(mPriceEdit.getText().toString()));
             price.setSize(Double.parseDouble(mSizeEdit.getText().toString()));
 
+            mPriceEdit.setText("");
+            mSizeEdit.setText("");
+
             mPricesAdapter.addItem(price);
         }
     }
 
     public void choosePrice(Price price) {
         ((MainActivity) getActivity()).choosePrice(price);
+    }
+
+    public void setPrice(String price) {
+        mPriceEdit.setText(price);
     }
 }

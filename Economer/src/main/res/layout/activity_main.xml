@@ -2,7 +2,8 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:animateLayoutChanges="true">
 
     <SurfaceView
         android:id="@+id/surface_camera"
@@ -30,13 +31,35 @@
         android:layout_marginLeft="@dimen/camera_sight_right"
         android:background="#88888888"/>
 
+    <TextView
+        android:id="@+id/text_price"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_toLeftOf="@+id/butt_accept"
+        android:layout_alignTop="@+id/butt_accept"
+        android:layout_marginRight="10dp"
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:background="#88ffffff"
+        android:visibility="gone"/>
+
+    <ImageButton
+        android:id="@+id/butt_accept"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/ic_action_accept_light"
+        android:visibility="gone"/>
+
     <ImageButton
         android:id="@+id/butt_shot"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="50dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginRight="10dp"
         android:src="@drawable/ic_action_camera"/>
 
     <android.support.v4.view.ViewPager
