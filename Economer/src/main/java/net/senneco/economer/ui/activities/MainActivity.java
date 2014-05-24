@@ -64,7 +64,11 @@ public class MainActivity extends ActionBarActivity {
         for (int i = 0; i < mItemsAdapter.getCount(); i++) {
             totalEconomy += mEconomies.get(i, 0d);
             Price.Level level = mLevels.get(i);
-            levelsCounter.put(level, levelsCounter.get(level) + 1);
+
+            if (levelsCounter.get(level) != null)
+            {
+                levelsCounter.put(level, levelsCounter.get(level) + 1);
+            }
         }
 
         Map.Entry<Price.Level, Integer> popularLevel = null;

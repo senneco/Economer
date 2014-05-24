@@ -1,6 +1,7 @@
 package net.senneco.economer.data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by senneco on 24.05.2014
@@ -73,7 +74,9 @@ public class Price implements Comparable<Price>, Serializable {
     }
 
     public static class EconomyCalculator {
-        public static void calc(Price price, Price maxPrice) {
+        public static void calc(Price price, List<Price> prices) {
+
+            Price maxPrice = prices.get(prices.size() - 1);
 
             double economyPercents = (1 - (price.getPriceRate() / maxPrice.getPriceRate())) * 100d;
 
@@ -85,9 +88,9 @@ public class Price implements Comparable<Price>, Serializable {
                 level = Level.VERY_GOOD;
             } else if (economyPercents > 8) {
                 level = Level.GOOD;
-            } else if (economyPercents > 3) {
+            } else if (economyPercents > 3 || prices.size() == 1) {
                 level = Level.NORMAL;
-            } else if (economyPercents > 1) {
+            } else if (economyPercents > 1 || prices.size() < 4) {
                 level = Level.BAD;
             } else {
                 level = Level.VERY_BAD;

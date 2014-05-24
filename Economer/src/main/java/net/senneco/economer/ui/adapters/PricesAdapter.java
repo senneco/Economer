@@ -47,9 +47,8 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
         Collections.sort(mPrices);
 
-        Price maxPrice = mPrices.get(mPrices.size() - 1);
         for (Price price : mPrices) {
-            Price.EconomyCalculator.calc(price, maxPrice);
+            Price.EconomyCalculator.calc(price, mPrices);
         }
 
         notifyDataSetChanged();
