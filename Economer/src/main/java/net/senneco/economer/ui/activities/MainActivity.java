@@ -21,6 +21,7 @@ public class MainActivity extends ActionBarActivity {
 
         mItemsPager = (ViewPager) findViewById(R.id.pager_items);
         mItemsPager.setAdapter(mItemsAdapter);
+        mItemsPager.setPageMargin(10);
     }
 
     public void addItemIfAny() {
