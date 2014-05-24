@@ -1,5 +1,6 @@
 package net.senneco.economer.ui.adapters;
 
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -51,10 +52,12 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Context context = parent.getContext();
+
         ItemHolder holder;
 
         if (convertView == null) {
-            convertView = View.inflate(parent.getContext(), R.layout.item_price, null);
+            convertView = View.inflate(context, R.layout.item_price, null);
 
             holder = new ItemHolder();
             holder.priceText = (TextView) convertView.findViewById(R.id.text_price);
@@ -77,6 +80,28 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
         holder.sizeText.setText(String.format("%.0f", price.getSize()));
         holder.economyText.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
         holder.acceptButton.setTag(price);
+
+        int backgroundColorResId;
+        if (economy > 13) {
+            backgroundColorResId = R.color.very_good;
+        } else if (economy > 8) {
+            backgroundColorResId = R.color.good;
+        } else if (economy > 3) {
+            backgroundColorResId = R.color.normal;
+        } else if (economy > 1) {
+            backgroundColorResId = R.color.bad;
+        } else if (mPrices.size() > 2) {
+            backgroundColorResId = R.color.very_bad;
+        } else if (mPrices.size() > 1) {
+            backgroundColorResId = R.color.bad;
+        } else {
+            backgroundColorResId = R.color.normal;
+        }
+
+
+
+        //noinspection ConstantConditions
+        convertView.setBackgroundColor(context.getResources().getColor(backgroundColorResId));
 
         return convertView;
     }
