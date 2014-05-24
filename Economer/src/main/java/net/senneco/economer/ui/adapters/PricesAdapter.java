@@ -76,6 +76,7 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
         holder.priceText.setText(String.format("%.2f", price.getPrice()));
         holder.sizeText.setText(String.format("%.0f", price.getSize()));
         holder.economyText.setText(economy > 0 ? String.format("-%.0f%%", economy) : "");
+        holder.acceptButton.setTag(price);
 
         return convertView;
     }
@@ -84,7 +85,7 @@ public class PricesAdapter extends BaseAdapter implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.butt_accept:
-                mCalculatorFragment.addItemIfAny();
+                mCalculatorFragment.choosePrice((Price) v.getTag(), mPrices.get(mPrices.size() - 1));
                 break;
         }
     }

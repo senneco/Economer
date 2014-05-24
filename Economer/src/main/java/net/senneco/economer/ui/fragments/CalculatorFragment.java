@@ -61,7 +61,7 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
         }
     }
 
-    public void addItemIfAny() {
-        ((MainActivity) getActivity()).addItemIfAny();
+    public void choosePrice(Price choosePrice, Price maxPrice) {
+        ((MainActivity) getActivity()).choosePrice(choosePrice, maxPrice);
     }
 }

@@ -8,5 +8,6 @@
     <string name="for_">за</string>
     <string name="quantity">ед.</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="economy_is">Экономия:</string>
 
 </resources>

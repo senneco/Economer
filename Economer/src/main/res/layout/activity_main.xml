@@ -1,6 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager_items"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/view_economy_background"/>
+
+    <View
+        android:id="@+id/view_economy_background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignTop="@+id/text_economy_is"
+        android:layout_alignParentBottom="true" />
+
+    <TextView
+        android:id="@+id/text_economy_is"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/text_economy"
+        android:layout_alignLeft="@+id/text_economy"
+        android:paddingTop="8dp"
+        android:text="@string/economy_is"/>
+
+    <TextView
+        android:id="@+id/text_economy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="8dp"
+        style="@android:style/TextAppearance.Large"
+        android:text="0.00"/>
+
+    <TextView
+        android:id="@+id/text_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/text_economy"
+        android:layout_toRightOf="@id/text_economy"
+        android:layout_marginLeft="4dp"
+        android:text="руб."/>
+
+</RelativeLayout>
