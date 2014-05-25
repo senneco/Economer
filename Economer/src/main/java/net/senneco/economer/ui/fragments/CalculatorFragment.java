@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 import net.senneco.economer.R;
 import net.senneco.economer.data.Price;
 import net.senneco.economer.ui.activities.MainActivity;
@@ -67,8 +68,13 @@ public class CalculatorFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         if (v.getId() == R.id.butt_add) {
             Price price = new Price();
-            price.setPrice(Double.parseDouble(mPriceEdit.getText().toString()));
-            price.setSize(Double.parseDouble(mSizeEdit.getText().toString()));
+            try {
+                price.setPrice(Double.parseDouble(mPriceEdit.getText().toString()));
+                price.setSize(Double.parseDouble(mSizeEdit.getText().toString()));
+            } catch (NumberFormatException e) {
+                Toast.makeText(getActivity(), "Введите корректные значения", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             mPriceEdit.setText("");
             mSizeEdit.setText("");

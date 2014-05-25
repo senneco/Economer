@@ -1,10 +1,7 @@
 package net.senneco.economer.ui.activities;
 
 import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Rect;
-import android.graphics.YuvImage;
+import android.graphics.*;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.Environment;
@@ -16,7 +13,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.googlecode.tesseract.android.TessBaseAPI;
 import net.senneco.economer.R;
 import net.senneco.economer.data.Price;
@@ -57,7 +56,7 @@ public class MainActivity extends ActionBarActivity {
 
     public static final String PACKAGE_NAME = "net.senneco.economer.ui.activities";
     public static final String DATA_PATH = Environment
-            .getExternalStorageDirectory().toString() + "/SimpleAndroidOCR/";
+            .getExternalStorageDirectory() + "/SimpleAndroidOCR/";
 
     // You should have the trained data file in assets folder
     // You can get them at:
@@ -140,6 +139,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
+                    mCamera.setDisplayOrientation(90);
                     mCamera.setPreviewDisplay(holder);
                     mCamera.setPreviewCallback(new Camera.PreviewCallback() {
                         @Override
@@ -159,10 +159,15 @@ public class MainActivity extends ActionBarActivity {
                                 int b = (int) getResources().getDimension(R.dimen.camera_sight_bottom);
 
                                 ByteArrayOutputStream out = new ByteArrayOutputStream();
-                                yuv.compressToJpeg(new Rect(l, t, r, b), 50, out);
 
+                                yuv.compressToJpeg(new Rect(t, height - r, b, height - l), 100, out);
+
+                                Matrix matrix = new Matrix();
+                                matrix.postRotate(90);
                                 byte[] bytes = out.toByteArray();
+
                                 Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                                bitmap = Bitmap.createBitmap(bitmap, 0 , 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
                                 TessBaseAPI baseApi = new TessBaseAPI();
                                 baseApi.setDebug(true);
