@@ -6,8 +6,10 @@ import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.*;
 import android.hardware.Camera;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -17,6 +19,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.googlecode.tesseract.android.TessBaseAPI;
@@ -54,6 +57,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private SurfaceHolder mCameraHolder;
     private TextView mPriceText;
     private ImageButton mAcceptButton;
+    private ProgressBar mPriceRecognizeProgress;
 
     boolean mNeedPhoto = false;
 
@@ -70,12 +74,14 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     protected static final String PHOTO_TAKEN = "photo_taken";
 
+    private Handler mHandler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String[] paths = new String[] { DATA_PATH, DATA_PATH + "tessdata/" };
+        String[] paths = new String[]{DATA_PATH, DATA_PATH + "tessdata/"};
 
         for (String path : paths) {
             File dir = new File(path);
@@ -120,6 +126,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mLevels = new SparseArray<Price.Level>();
 
         mPriceText = (TextView) findViewById(R.id.text_price);
+        mPriceRecognizeProgress = (ProgressBar) findViewById(R.id.progress_price_recognize);
 
         mAcceptButton = (ImageButton) findViewById(R.id.butt_accept);
         mAcceptButton.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +139,19 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.butt_shot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mNeedPhoto = true;
+                mPriceRecognizeProgress.setVisibility(View.VISIBLE);
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mNeedPhoto = true;
+                    }
+                }, 400);
+
+                if (mPriceText.getVisibility() == View.VISIBLE) {
+                    mPriceText.setVisibility(View.INVISIBLE);
+                    mAcceptButton.setVisibility(View.INVISIBLE);
+                }
             }
         });
         findViewById(R.id.butt_complete).setOnClickListener(this);
@@ -156,58 +175,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             if (mNeedPhoto) {
                                 mNeedPhoto = false;
 
-                                Camera.Parameters parameters = camera.getParameters();
-                                int width = parameters.getPreviewSize().width;
-                                int height = parameters.getPreviewSize().height;
-
-                                YuvImage yuv = new YuvImage(data, parameters.getPreviewFormat(), width, height, null);
-
-                                int l = (int) getResources().getDimension(R.dimen.camera_sight_left);
-                                int t = (int) getResources().getDimension(R.dimen.camera_sight_top);
-                                int r = (int) getResources().getDimension(R.dimen.camera_sight_right);
-                                int b = (int) getResources().getDimension(R.dimen.camera_sight_bottom);
-
-                                ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                                yuv.compressToJpeg(new Rect(t, height - r, b, height - l), 100, out);
-
-                                Matrix matrix = new Matrix();
-                                matrix.postRotate(90);
-                                byte[] bytes = out.toByteArray();
-
-                                Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                                bitmap = Bitmap.createBitmap(bitmap, 0 , 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-
-                                TessBaseAPI baseApi = new TessBaseAPI();
-                                baseApi.setDebug(true);
-                                baseApi.init(DATA_PATH, lang);
-                                baseApi.setImage(bitmap);
-
-                                String recognizedText = baseApi.getUTF8Text();
-
-                                baseApi.end();
-
-                                bitmap.recycle();
-
-                                // You now have the text in recognizedText var, you can do anything with it.
-                                // We will display a stripped out trimmed alpha-numeric version of it (if lang is eng)
-                                // so that garbage doesn't make it to the display.
-
-                                Log.v(TAG, "OCRED TEXT: " + recognizedText);
-
-                                recognizedText = recognizedText.replaceAll("[^0-9.,]+", "");
-
-                                double price;
-                                try {
-                                    price = Double.valueOf(recognizedText);
-                                } catch (NumberFormatException e) {
-                                    Toast.makeText(MainActivity.this, "Не могу распознать цену", Toast.LENGTH_SHORT).show();
-                                    return;
-                                }
-
-                                mPriceText.setText(String.valueOf(price));
-                                mPriceText.setVisibility(View.VISIBLE);
-                                mAcceptButton.setVisibility(View.VISIBLE);
+                                new TextRecognizeTask().execute(new BytesWrapper(data));
                             }
                         }
                     });
@@ -323,6 +291,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private int mCompleteDialogChoose = 0;
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -339,7 +308,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (mCompleteDialogChoose) {
                                     case 0:
-                                        Intent intent=new Intent(android.content.Intent.ACTION_SEND);
+                                        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
                                         intent.setType("text/plain");
                                         intent.putExtra(Intent.EXTRA_TITLE, R.string.app_name);
                                         intent.putExtra(Intent.EXTRA_TEXT, "Хэхэй! Я сэкономил " + mEconomyText.getText().toString() + " рублей!\nEconomer в Google Play! http://google.com");
@@ -357,6 +326,90 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         .setNegativeButton(android.R.string.cancel, null)
                         .show();
                 break;
+        }
+    }
+
+    private static class BytesWrapper {
+        private byte[] mBytes;
+
+        public BytesWrapper(byte[] bytes) {
+            mBytes = bytes;
+        }
+
+        public byte[] getBytes() {
+            return mBytes;
+        }
+    }
+
+    private class TextRecognizeTask extends AsyncTask<BytesWrapper, Void, String> {
+
+        @Override
+        protected String doInBackground(BytesWrapper... params) {
+            Camera.Parameters parameters = mCamera.getParameters();
+            int width = parameters.getPreviewSize().width;
+            int height = parameters.getPreviewSize().height;
+
+            YuvImage yuv = new YuvImage(params[0].getBytes(), parameters.getPreviewFormat(), width, height, null);
+
+            int l = (int) getResources().getDimension(R.dimen.camera_sight_left);
+            int t = (int) getResources().getDimension(R.dimen.camera_sight_top);
+            int r = (int) getResources().getDimension(R.dimen.camera_sight_right);
+            int b = (int) getResources().getDimension(R.dimen.camera_sight_bottom);
+
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+            yuv.compressToJpeg(new Rect(t, height - r, b, height - l), 100, out);
+
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            byte[] bytes = out.toByteArray();
+
+            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+            TessBaseAPI baseApi = new TessBaseAPI();
+            baseApi.setDebug(true);
+            baseApi.init(DATA_PATH, lang);
+            baseApi.setImage(bitmap);
+
+            String recognizedText = baseApi.getUTF8Text();
+
+            baseApi.end();
+
+            bitmap.recycle();
+
+            // You now have the text in recognizedText var, you can do anything with it.
+            // We will display a stripped out trimmed alpha-numeric version of it (if lang is eng)
+            // so that garbage doesn't make it to the display.
+
+            Log.v(TAG, "OCRED TEXT: " + recognizedText);
+
+            recognizedText = recognizedText.replaceAll("[^0-9.,]+", "");
+
+            return recognizedText;
+        }
+
+        @Override
+        protected void onPostExecute(String recognizedText) {
+            super.onPostExecute(recognizedText);
+
+            mPriceRecognizeProgress.setVisibility(View.GONE);
+
+            double price;
+            try {
+                price = Double.valueOf(recognizedText);
+            } catch (NumberFormatException e) {
+                if (mPriceText.getVisibility() == View.INVISIBLE) {
+                    mPriceText.setVisibility(View.VISIBLE);
+                    mAcceptButton.setVisibility(View.VISIBLE);
+                }
+                Toast.makeText(MainActivity.this, "Не могу распознать цену", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mPriceText.setText(String.valueOf(price));
+            mPriceText.setVisibility(View.VISIBLE);
+            mAcceptButton.setVisibility(View.VISIBLE);
         }
     }
 }
