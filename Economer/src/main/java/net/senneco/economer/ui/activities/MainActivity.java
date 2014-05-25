@@ -1,5 +1,8 @@
 package net.senneco.economer.ui.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.*;
 import android.hardware.Camera;
@@ -26,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final Map<Price.Level, Integer> LEVEL_COLORS;
 
@@ -125,12 +128,14 @@ public class MainActivity extends ActionBarActivity {
                 mItemsAdapter.getItem(mItemsPager.getCurrentItem()).setPrice(mPriceText.getText().toString());
             }
         });
+
         findViewById(R.id.butt_shot).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mNeedPhoto = true;
             }
         });
+        findViewById(R.id.butt_complete).setOnClickListener(this);
 
         mCameraSurface = (SurfaceView) findViewById(R.id.surface_camera);
 
@@ -139,6 +144,10 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 try {
+                    if (mCamera == null) {
+                        return;
+                    }
+
                     mCamera.setDisplayOrientation(90);
                     mCamera.setPreviewDisplay(holder);
                     mCamera.setPreviewCallback(new Camera.PreviewCallback() {
@@ -311,5 +320,43 @@ public class MainActivity extends ActionBarActivity {
             mItemsAdapter.addPage();
         }
         mItemsPager.setCurrentItem(mItemsPager.getCurrentItem() + 1);
+    }
+
+    private int mCompleteDialogChoose = 0;
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.butt_complete:
+                new AlertDialog.Builder(this)
+                        .setSingleChoiceItems(R.array.complete_dialog_items, 0, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                mCompleteDialogChoose = which;
+                            }
+                        })
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                switch (mCompleteDialogChoose) {
+                                    case 0:
+                                        Intent intent=new Intent(android.content.Intent.ACTION_SEND);
+                                        intent.setType("text/plain");
+                                        intent.putExtra(Intent.EXTRA_TITLE, R.string.app_name);
+                                        intent.putExtra(Intent.EXTRA_TEXT, "Хэхэй! Я сэкономил " + mEconomyText.getText().toString() + " рублей!\nEconomer в Google Play! http://google.com");
+
+                                        startActivity(Intent.createChooser(intent, "Расшарить через"));
+                                    case 1:
+                                        mItemsAdapter = new ItemsAdapter(getSupportFragmentManager());
+                                        mItemsPager.setAdapter(mItemsAdapter);
+                                        mEconomyText.setText("0.0");
+                                        mEconomyBackgroundView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+                                        break;
+                                }
+                            }
+                        })
+                        .setNegativeButton(android.R.string.cancel, null)
+                        .show();
+                break;
+        }
     }
 }

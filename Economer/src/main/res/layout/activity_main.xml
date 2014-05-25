@@ -3,6 +3,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EFEFEF"
     android:animateLayoutChanges="true">
 
     <SurfaceView
@@ -68,15 +69,14 @@
         android:layout_height="match_parent"
         android:layout_marginTop="125dp"
         android:layout_above="@+id/view_economy_background"
-        android:background="#EFEFEF"/>
+        android:background="#EFEFEF" />
 
     <View
         android:id="@+id/view_economy_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignTop="@+id/text_economy_is"
-        android:layout_alignParentBottom="true"
-        android:background="#EFEFEF" />
+        android:layout_alignParentBottom="true"/>
 
     <TextView
         android:id="@+id/text_economy_is"
@@ -105,5 +105,14 @@
         android:layout_toRightOf="@id/text_economy"
         android:layout_marginLeft="4dp"
         android:text="руб."/>
+
+    <ImageButton
+        android:id="@+id/butt_complete"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="8dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_action_accept"/>
 
 </RelativeLayout>
